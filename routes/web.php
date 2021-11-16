@@ -35,4 +35,5 @@ use Illuminate\Support\Facades\Route;
     //------------ Editor routes
     Route::group(['prefix' => 'editor', 'namespace' => 'Editor', 'middleware' => 'auth:editor'],function(){
         Route::get('/', 'EditorController@index');
+        Route::get('dashboard', 'EditorController@index');
     });
