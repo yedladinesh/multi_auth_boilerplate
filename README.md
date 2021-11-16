@@ -11,9 +11,6 @@ Multiple authentications using garuds  — admin, writer, user. We will make gua
 3. Kindly, check config/auth.php add the new guards edit as
 // config/auth.php
 
-    <?php
-
-    [...]
     'guards' => [
         [...]
         'admin' => [
