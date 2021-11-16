@@ -12,7 +12,7 @@ Login
 <div>
     <div class="container-fluid p-0">
         <div class="row no-gutters">
-            <div class="col-lg-4">
+            <div class="col-lg-5">
                 <div class="authentication-page-content p-4 d-flex align-items-center min-vh-100">
                     <div class="w-100">
                         <div class="row justify-content-center">
@@ -28,7 +28,7 @@ Login
                                     </div>
 
                                     <div class="p-2 mt-5">
-                                        <form method="POST" action="{{ route('login') }}">
+                                        <form method="POST" action="{{ url('login') }}">
                                             @csrf
 
                                             <div class="form-group auth-form-group-custom mb-4">
@@ -94,7 +94,7 @@ Login
                     </div>
                 </div>
             </div>
-            <div class="col-lg-8">
+            <div class="col-lg-7">
                 <div class="authentication-bg">
                 <div class="bg-overlay"></div>
             </div>

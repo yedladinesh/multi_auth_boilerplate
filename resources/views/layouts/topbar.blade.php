@@ -399,7 +399,7 @@
                     <a class="dropdown-item" href="#"><i class="ri-lock-unlock-line align-middle mr-1"></i>@lang('translation.Lock_screen') </a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item text-danger" href="javascript:void();" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="bx bx-power-off font-size-16 align-middle mr-1 text-danger"></i> @lang('translation.Logout')</a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    <form id="logout-form" action="{{ url('logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
                 </div>

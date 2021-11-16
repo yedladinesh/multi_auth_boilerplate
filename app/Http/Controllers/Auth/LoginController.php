@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Auth;
 
 class LoginController extends Controller
@@ -37,37 +38,49 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
-        $this->middleware('guest:admin')->except('logout');
-        $this->middleware('guest:editor')->except('logout');
+        $this->middleware('guest')->except('attemptLogout');
+        $this->middleware('guest:admin')->except('attemptLogout');
+        $this->middleware('guest:editor')->except('attemptLogout');
     }
 
-    public function adminLogin(Request $request)
-    {
+    // attemptLogin
+    public function attemptLogin(Request $request){
         $this->validate($request, [
             'email'   => 'required|email',
             'password' => 'required|min:6'
         ]);
-
-        if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
-
-            return redirect()->intended('/admin');
+        if($request->role_id === "1"){
+            $customerAttempt = Auth::guard('admin')->attempt($this->credentials($request), $request->has('remember'));
+            if($customerAttempt){
+                return redirect()->intended('/admin');
+            }
+            $this->commmonValidation("email");
+        }else{
+            $customerAttempt = Auth::guard('editor')->attempt($this->credentials($request), $request->has('remember'));
+            if($customerAttempt){
+                return redirect()->intended('/editor');
+            }
+            $this->commmonValidation("email");
         }
-        return back()->withInput($request->only('email', 'remember'));
     }
 
-   
-    public function editorLogin(Request $request)
+    public function commmonValidation($variable)
     {
-        $this->validate($request, [
-            'email'   => 'required|email',
-            'password' => 'required|min:6'
+        throw ValidationException::withMessages([
+            $variable => [trans('auth.failed')],
         ]);
-
-        if (Auth::guard('editor')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
-
-            return redirect()->intended('/editor');
-        }
-        return back()->withInput($request->only('email', 'remember'));
     }
+
+
+    public function attemptLogout(Request $request)
+    {
+        if(Auth::guard('admin')->check()){
+             Auth::guard('admin')->logout();
+        }else{
+            Auth::guard('editor')->logout();
+        }
+        return redirect('/login');
+    }
+
+    
 }

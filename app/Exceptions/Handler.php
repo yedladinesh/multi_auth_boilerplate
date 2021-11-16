@@ -50,9 +50,27 @@ class Handler extends ExceptionHandler
      *
      * @throws \Throwable
      */
-    public function render($request, Throwable $exception)
-    {
-        return parent::render($request, $exception);
+    public function render($request, Throwable $e)
+    {   
+        if($this->isHttpException($e))
+        {
+            switch (intval($e->getStatusCode())) {
+                // not found
+                case 404:
+                    //return redirect()->route('home');
+                    return response()->view('pages-404');
+                    break;
+                // internal error
+                case 500:
+                    return response()->view('pages.500');
+                    break;
+                default:
+                    return $this->renderHttpException($e);
+                    break;
+            }
+        }
+    
+            return parent::render($request, $e);      
     }
 
     protected function unauthenticated($request, AuthenticationException $exception)
@@ -61,10 +79,10 @@ class Handler extends ExceptionHandler
                 return response()->json(['error' => 'Unauthenticated.'], 401);
             }
             if ($request->is('admin') || $request->is('admin/*')) {
-                return redirect()->guest('/login/admin');
+                return redirect()->guest('/admin');
             }
             if ($request->is('editor') || $request->is('editor/*')) {
-                return redirect()->guest('/login/editor');
+                return redirect()->guest('/editor');
             }
             return redirect()->guest(route('login'));
         }

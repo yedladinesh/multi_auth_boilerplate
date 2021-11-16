@@ -17,20 +17,22 @@ use Illuminate\Support\Facades\Route;
 //     return "asdasdasd";
 // });
 
-Auth::routes();
+    Auth::routes();
 
-//Route::get('pages-404', 'NazoxController@index');
     Route::get('/', 'HomeController@root');
- //Route::get('{any}', 'HomeController@index');
+    //Route::get('{any}', 'HomeController@index');
+    Route::group(['namespace' => 'Auth'],function(){
+        Route::post('login', 'LoginController@attemptLogin');
+        Route::post('logout', 'LoginController@attemptLogout');
+    });
 
-// Route::get('index/{locale}', 'LocaleController@lang');
-    Route::get('/login/admin', 'Auth\LoginController@showAdminLoginForm');
-    Route::get('/login/editor', 'Auth\LoginController@showWriterLoginForm');
-    Route::get('/register/admin', 'Auth\RegisterController@showAdminRegisterForm');
-    Route::get('/register/writer', 'Auth\RegisterController@showWriterRegisterForm');
+    //------------ Admin routes
+    Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth:admin'],function(){
+        Route::get('/', 'AdminController@index');
+        Route::get('/dashboard', 'AdminController@index');
+    });
 
-
-    Route::post('/login/admin', 'Auth\LoginController@adminLogin');
-    Route::post('/login/editor', 'Auth\LoginController@editorLogin');
-    Route::post('/register/admin', 'Auth\RegisterController@createAdmin');
-    Route::post('/register/writer', 'Auth\RegisterController@createWriter');
+    //------------ Editor routes
+    Route::group(['prefix' => 'editor', 'namespace' => 'Editor', 'middleware' => 'auth:editor'],function(){
+        Route::get('/', 'EditorController@index');
+    });
