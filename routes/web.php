@@ -26,14 +26,20 @@ use Illuminate\Support\Facades\Route;
         Route::post('logout', 'LoginController@attemptLogout');
     });
 
+    
+
     //------------ Admin routes
     Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth:admin'],function(){
-        Route::get('/', 'AdminController@index');
-        Route::get('/dashboard', 'AdminController@index');
+        Route::get('/', function () {
+            return redirect('admin/dashboard');
+        });
+        Route::get('dashboard', 'AdminController@index');
     });
 
     //------------ Editor routes
     Route::group(['prefix' => 'editor', 'namespace' => 'Editor', 'middleware' => 'auth:editor'],function(){
-        Route::get('/', 'EditorController@index');
+        Route::get('/', function () {
+            return redirect('admin/dashboard');
+        });
         Route::get('dashboard', 'EditorController@index');
     });
